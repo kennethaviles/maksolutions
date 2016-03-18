@@ -63,7 +63,7 @@ def call():
 @app.route('/', methods=['GET', 'POST'])
 def welcome():
   resp = twilio.twiml.Response()
-  resp.say("Welcome to the MAK Soultions Testing ground")
+  resp.say("Welcome to the MAK Solutions Testing ground")
   return str(resp)
 
 if __name__ == "__main__":
