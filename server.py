@@ -52,6 +52,7 @@ def call():
   if not from_client:
     # PSTN -> client
     resp.dial(callerId=from_value).client(CLIENT)
+    resp.redirect(url_for('/ivr/welcome'))
   elif to.startswith("client:"):
     # client -> client
     resp.dial(callerId=from_value).client(to[7:])
@@ -59,6 +60,7 @@ def call():
   else:
     # client -> PSTN
     resp.dial(to, callerId=caller_id)
+    resp.redirect(url_for('/ivr/welcome'))
   return str(resp)
 
 @app.route('/ivr/welcome', methods=['POST'])
