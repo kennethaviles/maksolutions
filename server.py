@@ -94,25 +94,52 @@ def call():
   return str(resp)
 """
 
+# method called when a call is made
 @app.route('/outbound', methods=['POST'])
 def outbound():
-  response = twilio.twiml.Response()
+  resp = twilio.twiml.Response()
+  with resp.gather(numDigits=1, action=url_for('menu'), method="POST") as g:
+    # resp.dial(to, callerId=caller_id, action=url_for("outbound"))
+    g.say("Por favor presione el numero 1 si me escucha, o undir 2 si esta ocupado", voice="alice",language="es-ES")
 
-  response.say("Hello, we are calling you from MAK Solutions.")
-
-  return str(response)
+  return str(resp)
 
 @app.route('/menu', methods="POST")
 def menu():
-  response = twilio.twiml.Response()
-  response.say("I received a number")
-  return str(response)
+  option = request.form['Digits']
+  actions = {'1': _activate_Speaker,
+             '2': _not_Available}
+  if actions.has_key(option):
+    response = twilio.twiml.Response()
+    action[option](response)
+    return str(response)
+
+  return _redirect()
 
 @app.route('/', methods=['GET', 'POST'])
 def welcome():
   resp = twilio.twiml.Response()
   resp.say("Welcome to the MAK Solutions Testing ground")
   return str(resp)
+
+#Private methods
+
+#Will activate the speaker
+def _activate_Speaker(response):
+  response.say("Activate speaker")
+  return response
+
+def _not_Available(response):
+  response.say("Sorry not available")
+  response.hangup()
+  return response
+
+def _redirect():
+  response = twilio.twiml.Response()
+  response.say("Returning to the menu")
+  response.redirect(url_for('outbound')
+
+  return str(response) 
 
 if __name__ == "__main__":
   port = int(os.environ.get("PORT", 5000))
