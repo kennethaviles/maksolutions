@@ -49,6 +49,7 @@ def call():
     return str(resp.say("Invalid request"))
   from_client = from_value.startswith('client')
   caller_id = os.environ.get("CALLER_ID", CALLER_ID)
+  resp.say("Hello there!")
   if not from_client:
     # PSTN -> client
     resp.dial(callerId=from_value).client(CLIENT)
