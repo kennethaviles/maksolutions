@@ -82,7 +82,9 @@ def call():
   else:
     # client -> PSTN
     resp.say("third")
-    resp.dial(to, callerId=caller_id, action=url_for("outbound"))
+    with resp.gather(numDigits=1, action=url_for('menu'), methods="POST") as g:
+      # resp.dial(to, callerId=caller_id, action=url_for("outbound"))
+      resp.dial(to, callerId=caller_id)
   return str(resp)
 
 @app.route('/outbound', methods=['POST'])
@@ -91,6 +93,12 @@ def outbound():
 
   response.say("Hello, we are calling you from MAK Solutions.")
 
+  return str(response)
+
+@app.route('/menu', methods="POST")
+def menu():
+  response = twilio.twiml.Response()
+  response.say("I received a number")
   return str(response)
 
 @app.route('/', methods=['GET', 'POST'])
