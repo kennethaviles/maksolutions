@@ -44,7 +44,8 @@ def call():
   """           from PSTN, To value is ignored and call is     """
   """           routed to client named CLIENT                  """
   resp = twilio.twiml.Response()
-  from_value = request.values.get('From')
+  # from_value = request.values.get('From')
+  from_value = "+12018174217"
   to = request.values.get('To')
 
   account_sid = os.environ.get("ACCOUNT_SID", ACCOUNT_SID)
