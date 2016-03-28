@@ -82,7 +82,7 @@ def call():
   else:
     # client -> PSTN
     resp.say("third")
-    resp.dial(to, callerId=caller_id)
+    resp.dial(to, callerId=caller_id, action=url_for("outbound"))
   return str(resp)
 
 @app.route('/outbound', methods=['POST'])
