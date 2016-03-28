@@ -47,6 +47,7 @@ def call():
   from_value = request.values.get('From')
   to_number = request.values.get('To')
 
+  """
   account_sid = os.environ.get("ACCOUNT_SID", ACCOUNT_SID)
   auth_token = os.environ.get("AUTH_TOKEN", AUTH_TOKEN)
   app_sid = os.environ.get("APP_SID", APP_SID)
@@ -69,7 +70,7 @@ def call():
     return str(resp.say("Invalid request"))
   from_client = from_value.startswith('client')
   caller_id = os.environ.get("CALLER_ID", CALLER_ID)
-  resp.say("Hello there!")
+
   if not from_client:
     # PSTN -> client
     resp.dial(callerId=from_value).client(CLIENT)
@@ -81,7 +82,6 @@ def call():
     resp.dial(to, callerId=caller_id)
   return str(resp)
 
-  """
 @app.route('/outbound', methods=['POST'])
 def outbound():
   response = twilio.twiml.Response()
