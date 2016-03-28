@@ -1,7 +1,8 @@
 import os
-from flask import Flask, request
+from flask import Flask, request, url_for, jsonify
 from twilio.util import TwilioCapability
 import twilio.twiml
+from twilio.rest import TwilioRestClient
 
 # Account Sid and Auth Token can be found in your account dashboard
 ACCOUNT_SID = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
@@ -44,7 +45,26 @@ def call():
   """           routed to client named CLIENT                  """
   resp = twilio.twiml.Response()
   from_value = request.values.get('From')
-  to = request.values.get('To')
+  to_number = request.values.get('To')
+
+  account_sid = os.environ.get("ACCOUNT_SID", ACCOUNT_SID)
+  auth_token = os.environ.get("AUTH_TOKEN", AUTH_TOKEN)
+  app_sid = os.environ.get("APP_SID", APP_SID)
+
+  try:
+    twilio_client = TwilioRestClient(account_sid, auth_token)
+  except Exception, e:
+    msg = 'Missing configuration variable: {0}'.format(e)
+    return jsonify({'error': msg})
+
+  try:
+    twilio_client.calls.create(from_=from_value,to=to_number,url=url_for('outbound', _external=True))
+  except Exception, e:
+    return jsonify({'error': str(e)})
+
+  return jsonify({'message':'Call incoming!'})
+
+  """
   if not (from_value and to):
     return str(resp.say("Invalid request"))
   from_client = from_value.startswith('client')
@@ -60,6 +80,15 @@ def call():
     # client -> PSTN
     resp.dial(to, callerId=caller_id)
   return str(resp)
+
+  """
+@app.route('/outbound', methods=['POST'])
+def outbound():
+  response = twilio.twiml.Response()
+
+  response.say("Hello, we are calling you from MAK Solutions.")
+
+  return str(response)
 
 @app.route('/', methods=['GET', 'POST'])
 def welcome():
