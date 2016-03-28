@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, url_for, jsonify
+from flask import Flask, request, url_for
 from twilio.util import TwilioCapability
 import twilio.twiml
 from twilio.rest import TwilioRestClient
@@ -47,25 +47,30 @@ def call():
   from_value = request.values.get('From')
   to = request.values.get('To')
 
-  """
   account_sid = os.environ.get("ACCOUNT_SID", ACCOUNT_SID)
   auth_token = os.environ.get("AUTH_TOKEN", AUTH_TOKEN)
   app_sid = os.environ.get("APP_SID", APP_SID)
 
   try:
     twilio_client = TwilioRestClient(account_sid, auth_token)
+    resp.say("created client")
   except Exception, e:
     msg = 'Missing configuration variable: {0}'.format(e)
-    return jsonify({'error': msg})
+    resp.say(msg)
+    return str(resp)
 
   try:
-    twilio_client.calls.create(from_=from_value,to=to_number,url=url_for('outbound', _external=True))
+    twilio_client.calls.create(from_=from_value,to=to,url=url_for('.outbound', _external=True))
+    resp.say("created call")
   except Exception, e:
-    return jsonify({'error': str(e)})
+    msg = str(e)
+    resp.say(msg)
+    return str(resp)
 
-  return jsonify({'message':'Call incoming!'})
+  return str(resp)
 
-  """
+"""
+  
   if not (from_value and to):
     return str(resp.say("Invalid request"))
   from_client = from_value.startswith('client')
@@ -86,6 +91,7 @@ def call():
       # resp.dial(to, callerId=caller_id, action=url_for("outbound"))
       g.dial(to, callerId=caller_id)
   return str(resp)
+"""
 
 @app.route('/outbound', methods=['POST'])
 def outbound():
