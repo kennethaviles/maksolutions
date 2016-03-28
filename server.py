@@ -104,7 +104,7 @@ def outbound():
 
   return str(resp)
 
-@app.route('/menu', methods="POST")
+@app.route('/menu', methods=['POST'])
 def menu():
   option = request.form['Digits']
   actions = {'1': _activate_Speaker,
