@@ -111,7 +111,7 @@ def menu():
              '2': _not_Available}
   if actions.has_key(option):
     response = twilio.twiml.Response()
-    action[option](response)
+    actions[option](response)
     return str(response)
 
   return _redirect()
@@ -138,7 +138,6 @@ def _redirect():
   response = twilio.twiml.Response()
   response.say("Returning to the menu")
   response.redirect(url_for('outbound')
-
   return str(response) 
 
 if __name__ == "__main__":
