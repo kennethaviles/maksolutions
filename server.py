@@ -73,12 +73,15 @@ def call():
 
   if not from_client:
     # PSTN -> client
+    resp.say("first")
     resp.dial(callerId=from_value).client(CLIENT)
   elif to.startswith("client:"):
     # client -> client
+    resp.say("second")
     resp.dial(callerId=from_value).client(to[7:])
   else:
     # client -> PSTN
+    resp.say("third")
     resp.dial(to, callerId=caller_id)
   return str(resp)
 
