@@ -49,57 +49,58 @@ def call():
     return str(resp.say("Invalid request"))
   from_client = from_value.startswith('client')
   caller_id = os.environ.get("CALLER_ID", CALLER_ID)
+  resp.say("Hello you!", voice = 'alice')
   if not from_client:
     # PSTN -> client
     resp.dial(callerId=from_value).client(CLIENT)
-    resp.redirect(url_for('/ivr/welcome'))
+    #resp.redirect(url_for('/ivr/welcome'))
   elif to.startswith("client:"):
     # client -> client
     resp.dial(callerId=from_value).client(to[7:])
-    resp.redirect(url_for('/ivr/welcome'))
+    #resp.redirect(url_for('/ivr/welcome'))
   else:
     # client -> PSTN
     resp.dial(to, callerId=caller_id)
-    resp.redirect(url_for('/ivr/welcome'))
+    #resp.redirect(url_for('/ivr/welcome'))
   return str(resp)
 
-@app.route('/ivr/welcome', methods=['POST'])
-def welcomeToUser():
-  response = twilio.twiml.Response()
-  with response.gather(numDigits=1, action=url_for('menu'), methods="POST") as g:
-    g.say("Hello, please press 1 to give acknowledgement. Or else, press 0 or hangup.")
-  return str(response)
+# @app.route('/ivr/welcome', methods=['POST'])
+# def welcomeToUser():
+#   response = twilio.twiml.Response()
+#   with response.gather(numDigits=1, action=url_for('menu'), methods="POST") as g:
+#     g.say("Hello, please press 1 to give acknowledgement. Or else, press 0 or hangup.")
+#   return str(response)
 
-@app.route('/ivr/menu', methods=['POST'])
-def menu():
-  selected_option = request.form['Digits']
-  options_actions = {'1': _say_ackn}
+# @app.route('/ivr/menu', methods=['POST'])
+# def menu():
+#   selected_option = request.form['Digits']
+#   options_actions = {'1': _say_ackn}
 
-  if options_actions.has_key(selected_option):
-    resp = twilio.twiml.Response()
-    options_actions[selected_option](resp)
-    return str(resp)
-  return _redirect_welcome()
+#   if options_actions.has_key(selected_option):
+#     resp = twilio.twiml.Response()
+#     options_actions[selected_option](resp)
+#     return str(resp)
+#   return _redirect_welcome()
 
-@app.route('/', methods=['GET', 'POST'])
-def welcome():
-  resp = twilio.twiml.Response()
-  resp.say("Welcome to the MAK Solutions Testing ground")
-  return str(resp)
+# @app.route('/', methods=['GET', 'POST'])
+# def welcome():
+#   resp = twilio.twiml.Response()
+#   resp.say("Welcome to the MAK Solutions Testing ground")
+#   return str(resp)
 
-# private methods
+# # private methods
 
-def _say_ackn(response):
-    response.say("The acknowledgement was received.",
-                 voice="alice", language="en-GB")
-    return response
+# def _say_ackn(response):
+#     response.say("The acknowledgement was received.",
+#                  voice="alice", language="en-GB")
+#     return response
 
-def _redirect_welcome():
-  resp = twilio.twiml.Response()
-  resp.say("Returning to main menu", voice="alice",language="en-GB")
-  resp.redirect(url_for('welcome'))
+# def _redirect_welcome():
+#   resp = twilio.twiml.Response()
+#   resp.say("Returning to main menu", voice="alice",language="en-GB")
+#   resp.redirect(url_for('welcome'))
   
-  return str(resp)
+#   return str(resp)
 
 if __name__ == "__main__":
   port = int(os.environ.get("PORT", 5000))
