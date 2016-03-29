@@ -1,8 +1,14 @@
 import os
+<<<<<<< HEAD
 from flask import Flask, request, url_for, redirect
 from twilio.util import TwilioCapability
 import twilio.twiml
 from twilio.rest import TwilioRestClient
+=======
+from flask import Flask, request, url_for
+from twilio.util import TwilioCapability
+import twilio.twiml
+>>>>>>> parent of 025e4e9... delete server.py
 
 # Account Sid and Auth Token can be found in your account dashboard
 ACCOUNT_SID = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
@@ -44,6 +50,7 @@ def call():
   """           from PSTN, To value is ignored and call is     """
   """           routed to client named CLIENT                  """
   resp = twilio.twiml.Response()
+<<<<<<< HEAD
   # from_value = request.values.get('From')
   from_value = "+12018174217"
   to = request.values.get('To')
@@ -72,10 +79,15 @@ def call():
 
 """
   
+=======
+  from_value = request.values.get('From')
+  to = request.values.get('To')
+>>>>>>> parent of 025e4e9... delete server.py
   if not (from_value and to):
     return str(resp.say("Invalid request"))
   from_client = from_value.startswith('client')
   caller_id = os.environ.get("CALLER_ID", CALLER_ID)
+<<<<<<< HEAD
 
   if not from_client:
     # PSTN -> client
@@ -139,6 +151,60 @@ def _redirect():
   response.say("Returning to the menu")
   response.redirect(url_for('outbound'))
   return str(response)
+=======
+  resp.say("Hello you!", voice = 'alice')
+  if not from_client:
+    # PSTN -> client
+    resp.dial(callerId=from_value).client(CLIENT)
+    #resp.redirect(url_for('/ivr/welcome'))
+  elif to.startswith("client:"):
+    # client -> client
+    resp.dial(callerId=from_value).client(to[7:])
+    #resp.redirect(url_for('/ivr/welcome'))
+  else:
+    # client -> PSTN
+    resp.dial(to, callerId=caller_id)
+    #resp.redirect(url_for('/ivr/welcome'))
+  return str(resp)
+
+# @app.route('/ivr/welcome', methods=['POST'])
+# def welcomeToUser():
+#   response = twilio.twiml.Response()
+#   with response.gather(numDigits=1, action=url_for('menu'), methods="POST") as g:
+#     g.say("Hello, please press 1 to give acknowledgement. Or else, press 0 or hangup.")
+#   return str(response)
+
+# @app.route('/ivr/menu', methods=['POST'])
+# def menu():
+#   selected_option = request.form['Digits']
+#   options_actions = {'1': _say_ackn}
+
+#   if options_actions.has_key(selected_option):
+#     resp = twilio.twiml.Response()
+#     options_actions[selected_option](resp)
+#     return str(resp)
+#   return _redirect_welcome()
+
+# @app.route('/', methods=['GET', 'POST'])
+# def welcome():
+#   resp = twilio.twiml.Response()
+#   resp.say("Welcome to the MAK Solutions Testing ground")
+#   return str(resp)
+
+# # private methods
+
+# def _say_ackn(response):
+#     response.say("The acknowledgement was received.",
+#                  voice="alice", language="en-GB")
+#     return response
+
+# def _redirect_welcome():
+#   resp = twilio.twiml.Response()
+#   resp.say("Returning to main menu", voice="alice",language="en-GB")
+#   resp.redirect(url_for('welcome'))
+  
+#   return str(resp)
+>>>>>>> parent of 025e4e9... delete server.py
 
 if __name__ == "__main__":
   port = int(os.environ.get("PORT", 5000))
