@@ -116,6 +116,18 @@ def menu():
 
   return _redirect()
 
+@app.route('/events', methods=['POST'])
+def events():
+  option = request.form['Digits']
+  actions = {'1': _activate_Speaker,
+             '2': _not_Available}
+  if actions.has_key(option):
+    response = twilio.twiml.Response()
+    actions[option](response)
+    return str(response)
+
+  return _redirect()
+
 @app.route('/', methods=['GET', 'POST'])
 def welcome():
   resp = twilio.twiml.Response()
