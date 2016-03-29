@@ -149,7 +149,7 @@ def _not_Available(response):
 def _redirect():
   response = twilio.twiml.Response()
   response.say("Returning to the menu")
-  response.redirect(url_for('outbound')
+  response.redirect(url_for('outbound'))
   return str(response) 
 
 if __name__ == "__main__":
