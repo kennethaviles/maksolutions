@@ -43,12 +43,18 @@ def call():
   resp = twilio.twiml.Response()
   # from_value = request.values.get('From')
   from_value = "+12018174217"
-  # to = request.values.get('To')
-  numbers = request.values.get('Numbers')
-
-  parsed_numbers = json.loads(numbers)
-
-  to = parsed_numbers['1']
+  
+  if request.values.get('To') is not "":
+    to = request.values.get('To')
+    print("method call(): Will call "+to)
+  elif request.values.get('Numbers') is not "":
+    numbers = request.values.get('Numbers')
+    parsed_numbers = json.loads(numbers)
+    to = parsed_numbers['1']
+    print("method call(): Will call "+to)
+  else:
+    to = "+17875430767"
+    print("method call(): Will call "+to)
 
   account_sid = os.environ.get("ACCOUNT_SID", ACCOUNT_SID)
   auth_token = os.environ.get("AUTH_TOKEN", AUTH_TOKEN)
@@ -118,8 +124,14 @@ def outbound():
 @app.route('/status', methods=['POST'])
 def status():
   try:
-      resp = twilio.twiml.Response()
-      st = request.get('CallStatus')
+    resp = twilio.twiml.Response()
+    st = request.values.get('CallStatus')
+    
+    if st == "completed":
+      print("method status(): The call was completed")
+    elif st in ('failed', 'no-answer', 'canceled'):
+      print("method status(): The call was "+st)
+    else:
       print("method status(): The status is "+st)
   except Exception, e:
     msg = 'Exception: {0}'.format(e)
