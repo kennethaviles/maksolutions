@@ -56,18 +56,25 @@ def call():
 
   try:
     twilio_client = TwilioRestClient(account_sid, auth_token)
-    resp.say("created client")
+    # resp.say("created client")
+    print("method call(): created client")
   except Exception, e:
     msg = 'Missing configuration variable: {0}'.format(e)
-    resp.say(msg)
+    # resp.say(msg)
+    print("method call(): created client")
+
     return str(resp)
 
   try:
     twilio_client.calls.create(from_=from_value,to=to,url=url_for('.outbound', _external=True))
-    resp.say("created call")
+    # resp.say("created call")
+    print("method call(): created call")
+
   except Exception, e:
     msg = str(e)
-    resp.say(msg)
+    # resp.say(msg)
+    print(msg)
+
     return str(resp)
 
   return str(resp)
