@@ -72,7 +72,7 @@ def call():
 
   try:
     twilio_client.calls.create(from_=from_value,to=to,status_callback=url_for('.status',_external=True),status_callback_method="POST",
-    status_events=["initiated", "ringing", "answered", "completed"],url=url_for('.outbound',_external=True))
+    status_events=["initiated", "ringing", "answered", "completed"],if_machine='Continue',url=url_for('.outbound',_external=True))
     # resp.say("created call")
     print("method call(): created call")
 
@@ -113,6 +113,10 @@ def call():
 @app.route('/outbound', methods=['POST'])
 def outbound():
   resp = twilio.twiml.Response()
+  if request.values.get('AnsweredBy') == "machine":
+    print("method outbound(): AnsweredBy by machine")
+  else:
+    print("method outbound(): The status of the call: "+request.values.get('CallStatus')
   with resp.gather(numDigits=1, action=url_for('menu'), method="POST") as g:
     # resp.dial(to, callerId=caller_id, action=url_for("outbound"))
     g.say("Por favor presione el numero 1 si me escucha, o undir 2 si esta ocupado", voice="alice",language="es-ES")
