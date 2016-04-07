@@ -61,7 +61,7 @@ def call():
   except Exception, e:
     msg = 'Missing configuration variable: {0}'.format(e)
     # resp.say(msg)
-    print("method call(): created client")
+    print("method call():" +msg)
 
     return str(resp)
 
@@ -117,9 +117,16 @@ def outbound():
 # method for the status of the current call
 @app.route('/status', methods=['POST'])
 def status():
-  resp = twilio.twiml.Response()
-  st = request.POST['CallStatus']
-  print("method status(): The status is "+st)
+  try:
+      resp = twilio.twiml.Response()
+      st = request.get('CallStatus')
+      print("method status(): The status is "+st)
+  except Exception, e:
+    msg = 'Exception: {0}'.format(e)
+    # resp.say(msg)
+    print("method status(): "+ msg)
+    return str(resp)
+
   return str(resp)
 
 @app.route('/menu', methods=['POST'])
