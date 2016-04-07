@@ -37,9 +37,9 @@ def token():
   # This returns a token to use with Twilio based on the account and capabilities defined above
   return capability.generate()
 
+# Method for request for a call is made
 @app.route('/call', methods=['GET', 'POST'])
 def call():
-  """ This method routes calls from/to client                  """
   resp = twilio.twiml.Response()
   # from_value = request.values.get('From')
   from_value = "+12018174217"
@@ -85,36 +85,13 @@ def call():
 
   return str(resp)
 
-"""
-  
-  if not (from_value and to):
-    return str(resp.say("Invalid request"))
-  from_client = from_value.startswith('client')
-  caller_id = os.environ.get("CALLER_ID", CALLER_ID)
-
-  if not from_client:
-    # PSTN -> client
-    resp.say("first")
-    resp.dial(callerId=from_value).client(CLIENT)
-  elif to.startswith("client:"):
-    # client -> client
-    resp.say("second")
-    resp.dial(callerId=from_value).client(to[7:])
-  else:
-    # client -> PSTN
-    resp.say("third")
-    with resp.gather(numDigits=1, action=url_for('menu'), method="POST") as g:
-      # resp.dial(to, callerId=caller_id, action=url_for("outbound"))
-      g.dial(to, callerId=caller_id)
-  return str(resp)
-"""
-
 # method called when a call is made
 @app.route('/outbound', methods=['POST'])
 def outbound():
   resp = twilio.twiml.Response()
   if request.values.get('AnsweredBy') == "machine":
     print("method outbound(): AnsweredBy by machine")
+    resp.say("Le llamaba para avisarle sobre emergencia.", voice="alice",language="es-ES")
   else:
     print("method outbound(): The status of the call: "+request.values.get('CallStatus'))
   with resp.gather(numDigits=1, action=url_for('menu'), method="POST") as g:
@@ -144,6 +121,7 @@ def status():
 
   return str(resp)
 
+# method that will take an action depending on the key pressed by the caregiver
 @app.route('/menu', methods=['POST'])
 def menu():
   option = request.form['Digits']
@@ -164,7 +142,7 @@ def welcome():
 
 #Private methods
 
-#Will activate the speaker
+#Will "activate" the speaker
 def _activate_Speaker(response):
   response.say("Activate speaker")
   return response
