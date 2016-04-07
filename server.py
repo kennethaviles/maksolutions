@@ -1,4 +1,5 @@
 import os
+import json
 from flask import Flask, request, url_for, redirect
 from twilio.util import TwilioCapability
 import twilio.twiml
@@ -42,7 +43,12 @@ def call():
   resp = twilio.twiml.Response()
   # from_value = request.values.get('From')
   from_value = "+12018174217"
-  to = request.values.get('To')
+  # to = request.values.get('To')
+  numbers = request.values.get('Numbers')
+
+  parsed_numbers = json.loads(numbers)
+
+  to = parsed_numbers['1']
 
   account_sid = os.environ.get("ACCOUNT_SID", ACCOUNT_SID)
   auth_token = os.environ.get("AUTH_TOKEN", AUTH_TOKEN)
