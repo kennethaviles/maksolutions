@@ -43,18 +43,17 @@ def call():
   resp = twilio.twiml.Response()
   # from_value = request.values.get('From')
   from_value = "+12018174217"
-  
-  if request.values.get('To') is not "":
-    to = request.values.get('To')
-    print("method call(): Will call "+to)
-  elif request.values.get('Numbers') is not "":
+  to = request.values.get('To')
+  if to:    
+    print("method call() Phone: Will call "+to)
+  elif request.values.get('Numbers'):
     numbers = request.values.get('Numbers')
     parsed_numbers = json.loads(numbers)
     to = parsed_numbers['1']
-    print("method call(): Will call "+to)
+    print("method call() JSON: Will call "+to)
   else:
     to = "+17875430767"
-    print("method call(): Will call "+to)
+    print("method call() Hardcoded: Will call "+to)
 
   account_sid = os.environ.get("ACCOUNT_SID", ACCOUNT_SID)
   auth_token = os.environ.get("AUTH_TOKEN", AUTH_TOKEN)
