@@ -66,7 +66,8 @@ def call():
     return str(resp)
 
   try:
-    twilio_client.calls.create(from_=from_value,to=to,url=url_for('.outbound', _external=True))
+    twilio_client.calls.create(from_=from_value,to=to,status_callback=url_for('.status'),status_callback_method="POST",
+    status_events=["initiated", "ringing", "answered", "completed"],url=url_for('.outbound',_external=True))
     # resp.say("created call")
     print("method call(): created call")
 
@@ -113,20 +114,16 @@ def outbound():
 
   return str(resp)
 
+# method for the status of the current call
+@app.route('/status', methods=['POST'])
+def status():
+  resp = twilio.twiml.Response()
+  st = request.POST['CallStatus']
+  print("method status(): The status is "+st)
+  return str(resp)
+
 @app.route('/menu', methods=['POST'])
 def menu():
-  option = request.form['Digits']
-  actions = {'1': _activate_Speaker,
-             '2': _not_Available}
-  if actions.has_key(option):
-    response = twilio.twiml.Response()
-    actions[option](response)
-    return str(response)
-
-  return _redirect()
-
-@app.route('/events', methods=['POST'])
-def events():
   option = request.form['Digits']
   actions = {'1': _activate_Speaker,
              '2': _not_Available}
