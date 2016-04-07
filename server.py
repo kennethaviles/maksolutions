@@ -116,7 +116,7 @@ def outbound():
   if request.values.get('AnsweredBy') == "machine":
     print("method outbound(): AnsweredBy by machine")
   else:
-    print("method outbound(): The status of the call: "+request.values.get('CallStatus')
+    print("method outbound(): The status of the call: "+request.values.get('CallStatus'))
   with resp.gather(numDigits=1, action=url_for('menu'), method="POST") as g:
     # resp.dial(to, callerId=caller_id, action=url_for("outbound"))
     g.say("Por favor presione el numero 1 si me escucha, o undir 2 si esta ocupado", voice="alice",language="es-ES")
