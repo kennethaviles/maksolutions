@@ -66,7 +66,7 @@ def call():
     return str(resp)
 
   try:
-    twilio_client.calls.create(from_=from_value,to=to,status_callback='.status',_external=True),status_callback_method="POST",
+    twilio_client.calls.create(from_=from_value,to=to,status_callback=url_for('.status',_external=True),status_callback_method="POST",
     status_events=["initiated", "ringing", "answered", "completed"],url=url_for('.outbound',_external=True))
     # resp.say("created call")
     print("method call(): created call")
